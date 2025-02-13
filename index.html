@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot - IAM Consultant</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+        .chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 350px;
+            max-height: 500px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .chatbot-header {
+            background-color: #FF6700; /* Orange */
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .chatbot-header svg {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+        }
+        .status-text {
+            font-size: 14px;
+            color: white;
+            display: flex;
+            align-items: center;
+            margin-left: auto;
+        }
+        .status-text .status-indicator {
+            width: 10px;
+            height: 10px;
+            background-color: #28a745; /* Green */
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        .chatbot-body {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 10px;
+            background-color: white;
+        }
+        .chatbot-footer {
+            display: flex;
+            padding: 10px;
+            background-color: #e9ecef;
+        }
+        .chatbot-footer input {
+            flex-grow: 1;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        .chatbot-footer button {
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            background-color: #2a426e; /* Blue */
+            color: white;
+            cursor: pointer;
+        }
+        .chatbot-footer button:hover {
+            background-color: #1e3254;
+        }
+        .message {
+            margin: 10px 0;
+            display: flex;
+            align-items: flex-start;
+        }
+        .message.user {
+            text-align: right;
+            flex-direction: row-reverse;
+        }
+        .message.user .icon {
+            margin-left: 10px;
+        }
+        .message.bot .icon {
+            margin-right: 10px;
+        }
+        .message.user .message-text {
+            background-color: #FF6700; /* Orange */
+            color: white;
+            border-radius: 15px;
+            padding: 10px 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .message.bot .message-text {
+            background-color: #2a426e; /* Blue */
+            color: white;
+            border-radius: 15px;
+            padding: 10px 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .message-text {
+            display: inline-block;
+            max-width: 70%;
+        }
+        .icon {
+            font-size: 20px;
+        }
+        .typing-indicator {
+            display: none;
+            font-style: italic;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="chatbot-container">
+    <div class="chatbot-header">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
+            <path d="M20 2H4a2 2 0 00-2 2v14a2 2 0 002 2h4l4 4 4-4h4a2 2 0 002-2V4a2 2 0 00-2-2zm-2 12H6v-2h12v2zm0-4H6V8h12v2z"/>
+        </svg>        
+        Chat with IAM Consultant
+        <div class="status-text"><span class="status-indicator"></span>Online</div>
+    </div>
+    <div class="chatbot-body" id="chatbotBody">
+        <div class="message bot">
+            <i class="fas fa-robot icon"></i>
+            <div class="message-text">Welcome! How can I assist you today?</div>
+        </div>
+        <div class="typing-indicator" id="typingIndicator">The assistant is typing...</div>
+    </div>
+    <div class="chatbot-footer">
+        <input type="text" id="chatInput" placeholder="Type your message here...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function sendMessage() {
+    const input = document.getElementById('chatInput');
+    const message = input.value.trim();
+
+    if (message) {
+        const chatBody = document.getElementById('chatbotBody');
+        const typingIndicator = document.getElementById('typingIndicator');
+
+        // Add user message
+        const userMessage = document.createElement('div');
+        userMessage.className = 'message user';
+        userMessage.innerHTML = `<i class='fas fa-user icon'></i><div class="message-text">${message}</div>`;
+        chatBody.appendChild(userMessage);
+
+        // Clear input field
+        input.value = '';
+
+        // Reposition the typing indicator
+        chatBody.appendChild(typingIndicator);
+        typingIndicator.style.display = 'block';
+
+        // Simulate bot typing and response
+        setTimeout(() => {
+            typingIndicator.style.display = 'none';
+
+            const botMessage = document.createElement('div');
+            botMessage.className = 'message bot';
+            botMessage.innerHTML = `<i class='fas fa-robot icon'></i><div class="message-text">Thank you for your message. I will assist you shortly.</div>`;
+            chatBody.appendChild(botMessage);
+
+            // Reposition the typing indicator under the new bot message
+            chatBody.appendChild(typingIndicator);
+
+            // Scroll to bottom
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }, 2000); // Simulated typing delay
+    }
+}
+</script>
+
+</body>
+</html>
